@@ -1,0 +1,85 @@
+// Base styles
+html{
+//   overscroll-behavior-y: contain; /* PREVENT SWIPE RELOAD */
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+
+    // h1 {
+    //     margin: 0;
+    // }
+    // h2 {
+    //     margin: 0;
+    // }
+    // h3 {
+    //     margin: 0;
+    // }
+
+}
+
+body {
+
+    font-family: "SourceSans3", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--prim-txt);
+    min-height: 100lvh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+
+}
+
+main {
+    height: 100%;
+}
+
+.main-container {
+    background-color: var(--main-bg);
+    background: linear-gradient(0deg,
+            var(--main-bg-gr-01) 2%,
+            var(--main-bg-gr-02) 6%,
+            var(--main-bg-gr-03) 10%,
+            var(--main-bg-gr-04) 20%,
+            var(--main-bg) 30%);
+    
+}
+.main-bg-deco{
+    height: 100%;
+    background-image:
+        url(/img/sdeco/topBo_lit.svg),
+        url(/img/sdeco/topL_lit.svg),
+        url(/img/sdeco/topR_lit.svg),
+        url(/img/sdeco/bottomBo_lit.svg),
+        url(/img/sdeco/treeL_lit.svg),
+        url(/img/sdeco/treeR_lit.svg),
+        url(/img/sdeco/dzBin_lit.svg);
+
+    background-position:
+        top,
+        top left,
+        top right,
+        bottom,
+        bottom left,
+        bottom right,
+        50% 35%;
+
+    background-repeat: no-repeat;
+    background-size:
+        100vw,
+        20vw,
+        20vw,
+        100vw,
+        33vh,
+        40vh,
+        250px;
+}
+@media (prefers-color-scheme: dark) {
+    .main-bg-deco {
+        background-image:
+            url(/img/sdeco/topBo_drk.svg),
+            url(/img/sdeco/topL_drk.svg),
+            url(/img/sdeco/topR_drk.svg),
+            url(/img/sdeco/bottomBo_drk.svg),
+            url(/img/sdeco/treeL_drk.svg),
+            url(/img/sdeco/treeR_drk.svg),
+            url(/img/sdeco/dzBin_drk.svg);
+    }
+}

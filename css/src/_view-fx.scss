@@ -1,0 +1,166 @@
+// Variables
+#fx-view {
+    display: block;
+    height: 100%;
+    width: 100%;
+    color-scheme: light;
+    --vis-osc-main : rgb(87, 88, 170);
+}
+
+@media (prefers-color-scheme: dark) {
+#fx-view {
+    color-scheme: dark;
+     --vis-osc-main : rgb(236, 148, 14);
+  }
+}
+
+.fx-wrap{
+    display: flex;
+    // height: 100%;
+    width: 100%;
+    justify-content: space-around;
+}
+
+@media (orientation: portrait) {
+    .fx-wrap{
+        flex-wrap: wrap;
+    }
+    // .fx-bus-wrap{
+    //     flex: 1 0 50%;
+    // }
+}
+
+@media (orientation: landscape) {
+    .fx-wrap{
+        flex-wrap: nowrap;
+    }
+}
+
+
+.fx-bus-wrap{
+
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    // height: 100%;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    background-color: rgba(36, 36, 36, 0.582);
+    border-radius: 16px;
+    // backdrop-filter: blur(12px);
+    transition: 0.25s linear scale;
+}
+
+@media (min-width: 60rem) {
+    .fx-bus-wrap{
+    scale: 1.5;
+    }
+}
+
+@media (min-width: 70rem) {
+    .fx-bus-wrap{
+    scale: 2;
+    }
+
+}
+
+
+.fx-bus-name{
+    width: 100%;
+    background: rgba(0, 0, 0, 0.363);
+    color: rgba(255, 166, 0, 0.637);
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 800;
+}
+
+.btn-fx-toggle{
+    margin: 0.4rem 0.1rem;
+    max-width: 10rem;
+    box-shadow: 0px 1px 3px #111013;
+}
+
+.btn-fx-select{
+    margin: 0.3rem 0.1rem;
+    max-width: 10rem;
+}
+
+.fx-sliders-wrap{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.3rem;
+
+    input[type=range] {
+
+        // appearance: none;
+        position: relative;
+        display: inline-block;
+        background: rgb(51, 51, 51);
+        
+        vertical-align: middle;
+        border-radius: 6px;
+        box-shadow: 0px 0px 6px #000 inset;
+
+        writing-mode: vertical-lr;
+        direction: rtl;
+        accent-color: rgb(221, 122, 0);
+        width: 20px;
+        vertical-align: bottom;
+        margin: 0.2rem 0.1rem;
+    }
+
+
+
+}
+
+#tunerVis{
+    display:flex;
+   justify-content: center;
+
+   canvas{
+    margin: 0.2rem;
+    background-color: #00000054;
+    border-radius: 12px;
+    overflow: hidden;
+   }
+   
+}
+
+#audioVis{
+    display:flex;
+    flex-flow: column;
+    align-self: center;
+    canvas{
+    margin: 0.2rem;
+    background-color: #00000054;
+    border-radius: 12px;
+    overflow: hidden;
+   }
+}
+
+#tuner-view{
+    width: 100%;
+    height: 100%;
+}
+
+#tunerOutput{
+    align-self: center;
+    font-size: 1.5rem;
+}
+
+.tuner-ctrl-wrap{
+    display:flex;
+    // flex-flow: column;
+    align-items:center;
+    justify-content: center;
+    flex-wrap:wrap;
+    gap:1rem;
+}
+
+.tuner-settings-wrap{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1rem;
+}

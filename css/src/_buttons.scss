@@ -1,0 +1,13 @@
+// General button style
+button {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    background-color: var(--btn-prime-color);
+    color: var(--btn-prime-txt-color);
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+}

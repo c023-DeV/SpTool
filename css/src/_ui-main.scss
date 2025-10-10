@@ -1,0 +1,172 @@
+// Views
+.view {
+    // display: none; // Hidde all by default
+}
+
+#main-view {
+    // display: block; // Show by default
+    width: 100%;
+    height: 100%;
+}
+
+.view-wrap{
+    display: flex;
+    flex-flow: column;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+
+    // padding: 0.3rem;
+
+    // background-color: var(--boxCont-bg);
+    // border-radius: 24px;
+    backdrop-filter: blur(8px);
+}
+
+.text-container{
+    align-self: center;
+    padding-left: 2rem;
+    padding-right: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 60rem;
+
+}
+
+//Main Nav
+#mainHead,
+#mainFoot{
+
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    width: 100%;
+
+    background-color: var(--navbar-bg);
+    color: var(--header-text);
+    padding: 0.3rem;
+    text-align: center;
+
+    h1 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    h2 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    nav {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 0.25rem;
+
+        button {
+            background: var(--btn-prime-color);
+            color: var(--btn-prime-txt-color);
+            border: none;
+            margin: 0;
+            padding: 0.1rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    }
+
+    .nav-wrap{
+        width: 100%;
+        max-width: 65rem;
+    }
+
+}
+
+#main-top-ui{
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+}
+
+#mainFoot{
+    justify-content: space-around;
+    background-color: var(--footer-bg);
+}
+
+.mainTitle{
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem;
+}
+.topnav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: none;
+    justify-content: space-around;
+    align-items: center;
+    text-decoration: none;
+    padding-inline-start: 0;
+}
+.navitem {
+    float: left;
+    width: auto;
+    border: none;
+    display: block;
+    text-decoration: none;
+    outline: 0;
+    font-weight: 700;
+}
+//nav Icons
+
+.nav-svg{
+    height: 1.8rem;
+    width: auto;
+    display: flex;
+    path{
+        fill: var(--btn-prime-txt-color)
+    }
+}
+
+.ui-item-wrap{
+    
+    display:flex;
+    align-items:center;
+    gap:0.3rem;
+
+    font-weight: 700;
+
+    select {
+        font-weight: normal;
+    }
+
+}
+
+.legal{
+  align-self: center;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dzHomeBtn{
+    background-image: url('/img/dzTitle.svg');
+    width: 6.5rem;
+    height: 2rem;
+    display: block;
+    background-size: auto;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.harpFaceBtn{
+    width: 2rem;
+    height: 2rem;
+    display: block;
+    background-size: auto;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    path{
+        fill: var(--header-text)
+    }
+}

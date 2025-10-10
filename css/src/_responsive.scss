@@ -1,0 +1,26 @@
+@media (min-width: 60rem) {
+    #beatVis{
+    width: 20rem;
+    height: 20rem;
+    }
+    
+    .fx-bus-wrap{
+    scale: 1.5;
+    }
+
+}
+
+@media (min-width: 70rem) {
+    body {
+        font-size: 120%;
+    }
+
+    #beatVis{
+    width: 35rem;
+    height: 35rem;
+    }
+
+    .fx-bus-wrap{
+    scale: 2;
+    }
+}

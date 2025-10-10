@@ -1,0 +1,29 @@
+#settings-view{
+    width: 100%;
+    height: 100%;
+
+    h2{
+        margin:0;
+    }
+
+    .settings-container{
+    align-self: center;
+    display: flex;
+    flex-flow: column;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    max-width: 60rem;
+    }
+
+    .settings-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    }
+    .settings-item{
+        margin: 0.5rem;
+        padding: 0.3rem;
+    }
+
+}
+
