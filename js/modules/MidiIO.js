@@ -13,7 +13,7 @@ export class MidiIO extends EventEmitter {
     if (!navigator.requestMIDIAccess) {
       throw new Error('Web MIDI API not supported.');
     }
-    const access = await navigator.requestMIDIAccess({ sysex: true });
+    const access = await navigator.requestMIDIAccess({ sysex: false });
     this._setupAccess(access);
     this.emit('ready');
   }

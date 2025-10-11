@@ -1,14 +1,21 @@
 //System Notes
 #sysNotes{
     display: block;
+    border: 2px solid #363636;
+    border-radius: 8px;
     height : 2rem;
+    width: 12rem;
+    overflow: hidden;
 }
 .sysNote{
     background-color: #949494;
+    height:100%;
 }
 .sysAlert{
     background-color: #c04949;
+    height:100%;
 }
 .sysGood{
     background-color: #5db95d;
+    height:100%;
 }

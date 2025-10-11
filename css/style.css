@@ -175,7 +175,7 @@ main {
 
 #main-top-ui {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 0.15rem;
   display: flex;
   flex-wrap: wrap;
   align-content: space-around;
@@ -347,6 +347,12 @@ button {
   margin: 0.4rem 0.1rem;
   max-width: 10rem;
   box-shadow: 0px 1px 3px #111013;
+  background: #3b1d1d;
+}
+
+.btn-fx-toggle[data-state=true] {
+  background: #ca8a00;
+  color: #272727;
 }
 
 .btn-fx-select {
@@ -357,6 +363,7 @@ button {
 .fx-sliders-wrap {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   margin-top: 0.3rem;
 }
 .fx-sliders-wrap input[type=range] {
@@ -372,6 +379,9 @@ button {
   width: 20px;
   vertical-align: bottom;
   margin: 0.2rem 0.1rem;
+}
+.fx-sliders-wrap button {
+  padding: 0.15rem;
 }
 
 #tunerVis {
@@ -526,19 +536,26 @@ textarea {
 
 #sysNotes {
   display: block;
+  border: 2px solid #363636;
+  border-radius: 8px;
   height: 2rem;
+  width: 12rem;
+  overflow: hidden;
 }
 
 .sysNote {
   background-color: #949494;
+  height: 100%;
 }
 
 .sysAlert {
   background-color: #c04949;
+  height: 100%;
 }
 
 .sysGood {
   background-color: #5db95d;
+  height: 100%;
 }
 
 @media (min-width: 60rem) {
