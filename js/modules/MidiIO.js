@@ -1,5 +1,6 @@
 // MidiIO.js
 import { EventEmitter } from './EventEmitter.js';
+import { sysNote } from './sysNote.js';
 
 export class MidiIO extends EventEmitter {
   constructor() {
@@ -11,6 +12,7 @@ export class MidiIO extends EventEmitter {
   /** Initialise the Web MIDI API */
   async init() {
     if (!navigator.requestMIDIAccess) {
+      sysNote("💔BROWSER NO MIDI API","alert");
       throw new Error('Web MIDI API not supported.');
     }
     const access = await navigator.requestMIDIAccess({ sysex: false });

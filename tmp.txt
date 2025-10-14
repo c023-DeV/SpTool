@@ -1,0 +1,26 @@
+const tLabel = document.createElement('label');
+tLabel.htmlFor = `fx-toggle-b${bus + 1}-${si}`;
+node.appendChild(tLabel);
+const tog = document.createElement('button');
+tog.type = 'button';
+tog.id = `fx-toggle-b${bus + 1}-${si}`;
+tog.className = 'btn-fx-par-toggle';
+tog.dataset.bus = bus; // zero‑based index
+tog.dataset.ctrl = si; // zero‑based index
+tog.dataset.state = false; // on/off
+tog.textContent = 'OFF';
+tLabel.appendChild(tog);
+
+//Toggle
+node.addEventListener('click', e => {
+    const toggle = e.target.closest('button.btn-fx-par-toggle');
+    if (!toggle) {return;}
+    console.log(toggle );
+    const state = toggle.dataset.state === 'true';
+    const newState = !state;
+    toggle.dataset.state = newState;
+    toggle.textContent = newState ? 'ON' : 'OFF';
+    this.toggleFxParam(toggle.dataset.bus, toggle.dataset.ctrl, newState)
+    // this.toggleFx(btn.dataset.bus, newState);
+    
+});

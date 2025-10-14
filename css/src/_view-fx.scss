@@ -1,5 +1,6 @@
 // Variables
-#fx-view {
+#fx-view,
+#infx-view {
     display: block;
     height: 100%;
     width: 100%;
@@ -8,7 +9,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-#fx-view {
+#fx-view,
+#infx-view {
     color-scheme: dark;
      --vis-osc-main : rgb(236, 148, 14);
   }
@@ -92,7 +94,7 @@
     max-width: 10rem;
 }
 
-.fx-sliders-wrap{
+.fx-busctrl-wrap{
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -125,56 +127,18 @@
 }
 
 .btn-fx-par-toggle{
-    
+    box-shadow: 0px 1px 3px #111013;
+    background: #3b1d1d;
+    width: 2.4rem;
+    height: 2.4rem;
+}
+.btn-fx-par-toggle[data-state="true"]{
+    background: #ca8a00;
+    color: #272727;
 }
 
-#tunerVis{
-    display:flex;
-   justify-content: center;
-
-   canvas{
-    margin: 0.2rem;
-    background-color: #00000054;
-    border-radius: 12px;
-    overflow: hidden;
-   }
-   
-}
-
-#audioVis{
-    display:flex;
-    flex-flow: column;
-    align-self: center;
-    canvas{
-    margin: 0.2rem;
-    background-color: #00000054;
-    border-radius: 12px;
-    overflow: hidden;
-   }
-}
-
-#tuner-view{
+.fx-bus-ctrl-label{
+    font-size: small;
+    text-align: center;
     width: 100%;
-    height: 100%;
-}
-
-#tunerOutput{
-    align-self: center;
-    font-size: 1.5rem;
-}
-
-.tuner-ctrl-wrap{
-    display:flex;
-    // flex-flow: column;
-    align-items:center;
-    justify-content: center;
-    flex-wrap:wrap;
-    gap:1rem;
-}
-
-.tuner-settings-wrap{
-    display:flex;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:1rem;
 }

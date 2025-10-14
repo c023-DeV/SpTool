@@ -1,13 +1,11 @@
 import { MidiIO } from './MidiIO.js';
 import { sysNote } from './sysNote.js';
-import { BUS_FX_12, BUS_FX_34, BUS_FX_DEF_12, BUS_FX_DEF_34, BUS_FX_IN }  from './midiConfig.js';
+import { BUS_FX_12, BUS_FX_34, BUS_FX_DEF_12, BUS_FX_DEF_34, BUS_FX_IN, BUS_FX_DEF_IN }  from './midiConfig.js';
 
-
-const TOOL_VERSION = "0.0.01";
+const TOOL_VERSION = "0.0.02";
 const SETTINGS_KEY = "spSettings";
 
-const TARGET_NAME_SP404MKII = 'SP-404MKII-G';
-
+const TARGET_RE = /\bSP[- _]?404(?:MK{0,2}|MKII|MK2)\b/i;
 
 export class SpTool {
     static async create(opt) {
@@ -25,21 +23,26 @@ export class SpTool {
         this.settings  = this.loadSettings();
 
         this.el = {
-            busCtrlNode: []
-
+            busCtrlNode: [],
+            busCtrlLabelNode: [],
         }; //To store UI root nodes
+
+        this._fxCtrlToggleHandler   = this._fxCtrlToggleHandler.bind(this);
+        this._fxCtrlSliderChange    = this._fxCtrlSliderChange.bind(this);
+        this._fxCtrlSliderInput     = this._fxCtrlSliderInput.bind(this);
+
 
         //View Handeling
         this.setupViewNav();
         this.showView(this.settings.activeView);
         this.setupUI();
+
+
+
+
     }   
     
-//#region Functions
-
-
-
-//#endregion
+//#region UI SETUP
 
     setupViewNav(){
         // --- View Navigation ---
@@ -63,8 +66,6 @@ export class SpTool {
         this.currentView = viewId;
     }
 
-
-
     getUIElements(root) {
         return {
             fxBusCtrl: root.querySelector('#fxBusCtrl'),
@@ -75,32 +76,42 @@ export class SpTool {
         this.setupFXUI();
     }
 
-
-
     setupFXUI() {
-        const root = document.querySelector('#fxBusCtrl');
-        root.innerHTML = '';
+        const rFx = document.querySelector('#fxBusCtrl');
+        const rInFx = document.querySelector('#infxBusCtrl');
 
-        for (let i = 0; i < 4; i++) {
-            const busId = `bus${i + 1}`;
-            const busState = this.settings[busId];
+        rFx.innerHTML = '';
+        rInFx.innerHTML = '';
+
+        let rE = rFx;
+
+        for (let i = 0; i < 5; i++) {
+            const busState = this.settings.bus[i];
+            let fxArr = (i < 2) ? BUS_FX_12 : BUS_FX_34;
+
+            let busLabel = `FX Bus ${i + 1}`;
+            if (i === 4){
+                fxArr = BUS_FX_IN;
+                busLabel = `Input FX`;
+                rE = rInFx;
+            }
 
             // ----- wrapper -----
             const wrap = document.createElement('div');
-            wrap.id = `fxBus${i + 1}`;
+            wrap.id = `fxBus${i}`;
             wrap.className = 'fx-bus-wrap';
-            root.appendChild(wrap);
+            rE.appendChild(wrap);
 
             // ----- name -----
             const name = document.createElement('span');
-            name.textContent = `FX Bus ${i + 1}`;
+            name.textContent = busLabel;
             name.className = 'fx-bus-name';
             wrap.appendChild(name);
 
             // ----- toggle button -----
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.id = `fxToggleBus${i + 1}`;
+            btn.id = `fxToggleBus${i}`;
             btn.className = 'btn-fx-toggle';
             btn.dataset.bus = i;                     // zero‑based index
             btn.dataset.state = false;               // on/off
@@ -109,16 +120,16 @@ export class SpTool {
 
             // ----- FX selector -----
             const label = document.createElement('label');
-            label.htmlFor = `fxSelBus${i + 1}`;
+            label.htmlFor = `fxSelBus${i}`;
             wrap.appendChild(label);
 
             const sel = document.createElement('select');
-            sel.id = `fxSelBus${i + 1}`;
-            sel.dataset.bus = i;                     // zero‑based index
+            sel.id = `fxSelBus${i}`;
+            sel.dataset.bus = i;
             sel.className = 'btn-fx-select';
             label.appendChild(sel);
 
-            const fxArr = (i < 2) ? BUS_FX_12 : BUS_FX_34;
+            //Add FX to selectors
             fxArr.forEach((fxName, idx) => {
                 const opt = document.createElement('option');
                 opt.value = idx;
@@ -127,21 +138,27 @@ export class SpTool {
             });
             sel.value = busState.fx;                // restore saved FX
 
-            // ----- sliders -----
-            const slidersWrap = document.createElement('div');
-            slidersWrap.id = `fxCtrlBus${i + 1}`;
-            slidersWrap.className = 'fx-sliders-wrap';
-            wrap.appendChild(slidersWrap);
+            // ----- FX CONTROL WRAP -----
+            const busCtrlWrap = document.createElement('div');
+            busCtrlWrap.id = `fxCtrlBus${i}`;
+            busCtrlWrap.className = 'fx-busctrl-wrap';
+            wrap.appendChild(busCtrlWrap);
 
-            this.el.busCtrlNode[i] = slidersWrap;
+            this.el.busCtrlNode[i] = busCtrlWrap;
 
-            this.setupFxCtrl(i, busState.fx, slidersWrap);
+            this.setupFxCtrl(i, busState.fx, busCtrlWrap);
 
+            // ----- Control Label -----
+            const cLabel = document.createElement('span');
+            cLabel.textContent = `-CTRL-`;
+            cLabel.className = 'fx-bus-ctrl-label';
+            wrap.appendChild(cLabel);
+            this.el.busCtrlLabelNode[i] = cLabel;
         }
 
 
         // toggle buttons
-        root.addEventListener('pointerdown', e => {
+        rE.addEventListener('pointerdown', e => {
             const btn = e.target.closest('button.btn-fx-toggle');
             if (!btn) return;
 
@@ -157,166 +174,76 @@ export class SpTool {
         });
 
         // FX SELECTORS
-        root.addEventListener('change', e => {
+        rE.addEventListener('change', e => {
             const sel = e.target.closest('select.btn-fx-select');
             if (sel) {
                 const bus = sel.dataset.bus;
-                // const key = `bus${bus+1}`;
-                // this.settings[key].fx = Number(sel.value);
-                // this.saveSettings(this.settings);
+                this.settings.bus[bus].fx = Number(sel.value);
                 this.selectFx(bus, sel.value); 
-                this.toggleFx(bus, false);
+                this.toggleFx(bus, false); //Turn it off on selecting
                 this.setupFxCtrl(bus, Number(sel.value), this.el.busCtrlNode[bus]);
+                this.saveSettings(this.settings);
                 return;
             }
 
-            const slider = e.target.closest('input.btn-fx-par-slider');
-            if (!slider) return;
-            const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
-            const key = `bus${bus}`;
-            this.settings[key].sliders[param] = Number(slider.value);
-            this.saveSettings(this.settings);
+            // const slider = e.target.closest('input.btn-fx-par-slider');
+            // if (!slider) return;
+            // const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
+            // const key = `bus${bus}`;
+            // this.settings[key].sliders[param] = Number(slider.value);
+            // this.saveSettings(this.settings);
 
         });
 
-        //  sliders - live updates
-        root.addEventListener('input', e => {
-            const slider = e.target.closest('input.btn-fx-par-slider');
-            if (!slider) return;
-            const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
-            this.setFxParam(bus, param, Number(slider.value)); // your handler
+
+        // toggle buttons
+        rFx.addEventListener('pointerdown', e => {
+            const btn = e.target.closest('button.btn-fx-toggle');
+            if (!btn) return;
+
+            const state = btn.dataset.state === 'true';
+            const newState = !state;
+            btn.dataset.state = newState;
+            btn.textContent = newState ? 'ON' : 'OFF';
+            this.toggleFx(btn.dataset.bus, newState);
+
+            //Don't want to save the state of the bus toggle
+            // this.saveSettings(this.settings); 
+
         });
+
+        // FX SELECTORS
+        rFx.addEventListener('change', e => {
+            const sel = e.target.closest('select.btn-fx-select');
+            if (sel) {
+                const bus = sel.dataset.bus;
+                this.settings.bus[bus].fx = Number(sel.value);
+                this.selectFx(bus, sel.value); 
+                this.toggleFx(bus, false); //Turn it off on selecting
+                this.setupFxCtrl(bus, Number(sel.value), this.el.busCtrlNode[bus]);
+                this.saveSettings(this.settings);
+                return;
+            }
+
+            // const slider = e.target.closest('input.btn-fx-par-slider');
+            // if (!slider) return;
+            // const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
+            // const key = `bus${bus}`;
+            // this.settings[key].sliders[param] = Number(slider.value);
+            // this.saveSettings(this.settings);
+
+        });
+
+
+        
     }
 
-
-    // setupFXUI() {
-    //     const root = document.querySelector('#fxBusCtrl');
-    //     root.innerHTML = '';
-
-    //     for (let i = 0; i < 4; i++) {
-    //         const busId = `bus${i + 1}`;
-    //         const busState = this.settings[busId];
-
-    //         // ----- wrapper -----
-    //         const wrap = document.createElement('div');
-    //         wrap.id = `fxBus${i + 1}`;
-    //         wrap.className = 'fx-bus-wrap';
-    //         root.appendChild(wrap);
-
-    //         // ----- name -----
-    //         const name = document.createElement('span');
-    //         name.textContent = `FX Bus ${i + 1}`;
-    //         name.className = 'fx-bus-name';
-    //         wrap.appendChild(name);
-
-    //         // ----- toggle button -----
-    //         const btn = document.createElement('button');
-    //         btn.type = 'button';
-    //         btn.id = `fxToggleBus${i + 1}`;
-    //         btn.className = 'btn-fx-toggle';
-    //         btn.dataset.bus = i;                     // zero‑based index
-    //         btn.textContent = busState.on ? 'ON' : 'OFF';
-    //         wrap.appendChild(btn);
-
-    //         // ----- FX selector -----
-    //         const label = document.createElement('label');
-    //         label.htmlFor = `fxSelBus${i + 1}`;
-    //         wrap.appendChild(label);
-
-    //         const sel = document.createElement('select');
-    //         sel.id = `fxSelBus${i + 1}`;
-    //         sel.className = 'btn-fx-select';
-    //         label.appendChild(sel);
-
-    //         const fxArr = (i < 2) ? BUS_FX_12 : BUS_FX_34;
-    //         fxArr.forEach((fxName, idx) => {
-    //             const opt = document.createElement('option');
-    //             opt.value = idx;
-    //             opt.textContent = fxName;
-    //             sel.appendChild(opt);
-    //         });
-    //         sel.value = busState.fx;                // restore saved FX
-
-    //         // ----- sliders -----
-    //         const fxArrCtrl = (i < 2) ? BUS_FX_DEF_12 : BUS_FX_DEF_34;
-    //         const slidersWrap = document.createElement('div');
-    //         slidersWrap.className = 'fx-sliders-wrap';
-    //         wrap.appendChild(slidersWrap);
-
-    //         for (let si = 0; si < 6; si++) {
-
-    //             const fxCtrlObj = fxArrCtrl[busState.fx];
-    //             const key = `ctrl${si}`;
-    //             if (fxCtrlObj.key){
-
-    //             }
+//#endregion
 
 
-    //             const sLabel = document.createElement('label');
-    //             sLabel.htmlFor = `fx-slider-b${i + 1}-${si}`;
-    //             slidersWrap.appendChild(sLabel);
-
-    //             const slider = document.createElement('input');
-    //             slider.type = 'range';
-    //             slider.min = '0';
-    //             slider.max = '127';
-    //             slider.step = '1';
-    //             slider.id = `fx-slider-b${i + 1}-${si}`;
-    //             slider.className = 'btn-fx-par-slider';
-    //             slider.value = busState.sliders[si]; // restore saved value
-    //             sLabel.appendChild(slider);
-    //         }
-    //     }
 
 
-    //     // toggle buttons
-    //     root.addEventListener('click', e => {
-    //         const btn = e.target.closest('button.btn-fx-toggle');
-    //         if (!btn) return;
-
-    //         const busIdx = Number(btn.dataset.bus) + 1; // 1‑based
-    //         const key = `bus${busIdx}`;
-    //         const bus = this.settings[key];
-
-    //         bus.on = !bus.on;
-    //         btn.textContent = bus.on ? 'ON' : 'OFF';
-
-    //         this.toggleFx(busIdx, bus.on);
-
-    //         this.saveSettings(this.settings);
-    //     });
-
-    //     // selects (FX choice)
-    //     root.addEventListener('change', e => {
-    //         const sel = e.target.closest('select.btn-fx-select');
-    //         if (sel) {
-    //             const bus = sel.id.match(/fxSelBus(\d+)/)[1];
-    //             const key = `bus${bus}`;
-    //             this.settings[key].fx = Number(sel.value);
-    //             this.saveSettings(this.settings);
-    //             this.selectFx(bus, sel.value); 
-    //             this.toggleFx(bus, false);
-    //             return;
-    //         }
-
-    //         const slider = e.target.closest('input.btn-fx-par-slider');
-    //         if (!slider) return;
-    //         const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
-    //         const key = `bus${bus}`;
-    //         this.settings[key].sliders[param] = Number(slider.value);
-    //         this.saveSettings(this.settings);
-
-    //     });
-
-    //     //  sliders - live updates
-    //     root.addEventListener('input', e => {
-    //         const slider = e.target.closest('input.btn-fx-par-slider');
-    //         if (!slider) return;
-    //         const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
-    //         this.setFxParam(bus, param, Number(slider.value)); // your handler
-    //     });
-    // }
-
+//#region MIDI SETUP
     async setupMidiIO(){
 
     console.log('MIDI Setup...');
@@ -329,31 +256,40 @@ export class SpTool {
     this.midiIO.on('noteoff',             e => console.log('Note OFF', e));
     this.midiIO.on('controlchange',       e => console.log('CC', e));
 
-    //CONNECT TO SP404MKII
+    // CONNECT TO SP404MKII
     this.midiIO.on('outputConnected', info => {
-        // if (this.sp404OutId === info.id) return;
-        console.log('Output Connected:', info.name)
-            if (info.name.includes(TARGET_NAME_SP404MKII)) {
-                this.sp404OutId = info.id;
-                console.log('✅ SP-404 ready');
-                sysNote('✅ SP-404 ready', 'good');
-            }
-        });
+    console.log('Output Connected:', info.name, info.manufacturer, info.id);
 
+    // test both name and manufacturer
+    const matches = TARGET_RE.test(info.name || '') || TARGET_RE.test(info.manufacturer || '');
+    if (!matches) return;
+    // if already set and same id, ignore; otherwise set and notify
+    if (this.sp404OutId === info.id) return;
+    this.sp404OutId = info.id;
+    console.log('✅ SP-404 ready');
+    sysNote('✅ SP-404 ready', 'good');
+    });
+
+    // handle disconnects
     this.midiIO.on('outputDisconnected', info => {
-        console.log('Output Disconnected:', info.name)
-            if (info.id === this.sp404OutId) {
-                console.log('⚠️ SP-404 lost');
-                sysNote('⚠️ SP-404 lost', 'alert');
-                this.sp404OutId = null;
-            }
-        });
+    console.log('Output Disconnected:', info.name, info.manufacturer, info.id);
+    if (info.id !== this.sp404OutId) return;
+    console.log('⚠️ SP-404 lost');
+    sysNote('⚠️ SP-404 lost', 'alert');
+    this.sp404OutId = null;
+    });
 
     await this.midiIO.init();
 
     }
 
-    //Save Load
+//#endregion
+
+
+
+
+//#region Save Load
+
     loadSettings() {
         const savedVersion = localStorage.getItem('toolVersion');
         if (savedVersion === TOOL_VERSION) {
@@ -369,33 +305,169 @@ export class SpTool {
         return defaults;
     }
 
+    setupSaveDefault(){
+
+        let bus12Def = [];
+        BUS_FX_DEF_12.forEach((element, index) => {
+                bus12Def[index] = [];
+                for (let ix = 0; ix < 6; ix++) {
+                    const key = `ctrl${ix+1}`;
+                    if(element[key]){
+                        bus12Def[index].push(element[key].input.defVal);
+                        // console.log(`added defValue: ${element[key].input.defVal} to FX: ${element.name}`);
+                    }
+                }
+            });
+
+        let bus34Def = [];
+        BUS_FX_DEF_34.forEach((element, index) => {
+                bus34Def[index] = [];
+                for (let ix = 0; ix < 6; ix++) {
+                    const key = `ctrl${ix+1}`;
+                    if(element[key]){
+                        bus34Def[index].push(element[key].input.defVal);
+                        // console.log(`added defValue: ${element[key].input.defVal} to FX: ${element.name}`);
+                    }
+                }
+            });
+
+        let busINDef = [];
+        BUS_FX_DEF_IN.forEach((element, index) => {
+                busINDef[index] = [];
+                for (let ix = 0; ix < 6; ix++) {
+                    const key = `ctrl${ix+1}`;
+                    if(element[key]){
+                        busINDef[index].push(element[key].input.defVal);
+                        // console.log(`added defValue: ${element[key].input.defVal} to FX: ${element.name}`);
+                    }
+                }
+            });
+
+
+        return {
+            activeView: "fx-view",
+
+            busFX_def_12: bus12Def,
+            busFX_def_34: bus34Def,
+            busFX_def_IN: busINDef,
+
+            bus : 
+            [
+                { on: false, fx: 0, ctrl: bus12Def },
+                { on: false, fx: 0, ctrl: bus12Def },
+                { on: false, fx: 0, ctrl: bus34Def },
+                { on: false, fx: 0, ctrl: bus34Def },
+                { on: false, fx: 0, ctrl: busINDef },
+            ],
+        
+        };
+    }
+
     saveSettings(settings) {
         localStorage.setItem('toolVersion', TOOL_VERSION);
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     }
 
-    //Settings Switch
-    onSettingChange(key, value) {
-        console.log(`Setting Change: ${key} →`, value);
-        switch (key) {
+//#endregion
 
-            case 'timeSel':
-             break;
 
-            case 'volSel': 
-             break;
+
+
+
+//#region CONTROL SETUP
+
+    setupFxCtrl(bus, fxNumber, node) {
+
+        //CLEAN UP OLD NODES AND LISTENERS HERE
+
+        if (!node) {
+                console.error('setupFxCtrl called with null node');
+                return;
+            }
+
+        node.removeEventListener('click',   this._fxCtrlToggleHandler);
+        node.removeEventListener('change',  this._fxCtrlSliderChange);
+        node.removeEventListener('input',   this._fxCtrlSliderInput);
+        node.innerHTML = '';
+
+        
+        //SETUP NEW CONTROLS
+        let fxArrCtrl = (bus < 2) ? BUS_FX_DEF_12 : BUS_FX_DEF_34;
+        if (Number(bus) === 4){ fxArrCtrl = BUS_FX_DEF_IN;}
+
+        // console.log(bus, fxArrCtrl);
+
+        for (let si = 0; si < 6; si++) {
+            const fxCtrlObj = fxArrCtrl[fxNumber];
+            const key = `ctrl${si+1}`;
+
+            //Check if there is a control
+            if (!fxCtrlObj[key]) { continue;}
+
+            const o = fxCtrlObj[key];
+
+            switch (o.input.type) {
+                case "slider":
+                case "list":
+                    const sLabel = document.createElement('label');
+                    sLabel.htmlFor = `fx-slider-b${bus}-${si}`;
+                    node.appendChild(sLabel);
+
+                    const slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.min = '0';
+                    slider.max = '127';
+                    slider.step = '1';
+                    slider.id = `fx-slider-b${bus}-${si}`;
+                    slider.className = 'btn-fx-par-slider';
+                    slider.dataset.bus = bus; // zero‑based index
+                    slider.dataset.fxn = fxNumber;
+                    slider.dataset.ctrl = si;
+                    slider.dataset.label = o.name;
+                    slider.value = this.settings.bus[bus].ctrl[fxNumber][si]; //o.input.defVal; // restore saved value
+                    // console.log(`Bus Num: ${bus}`, `CTRL: ${si}`, `CTRL Val: ${this.settings.bus[bus].ctrl[fxNumber][si]}`);
+                    sLabel.appendChild(slider);
+
+                    break;
+
+                case "toggle":
+                    const tLabel = document.createElement('label');
+                    tLabel.htmlFor = `fx-toggle-b${bus}-${si}`;
+                    node.appendChild(tLabel);
+
+                    const tog = document.createElement('button');
+                    tog.type = 'button';
+                    tog.id = `fx-toggle-b${bus}-${si}`;
+                    tog.className = 'btn-fx-par-toggle';
+                    tog.dataset.bus = bus; // zero‑based index
+                    tog.dataset.fxn = fxNumber;
+                    tog.dataset.ctrl = si; // zero‑based index
+                    tog.dataset.label = o.name;
+                    tog.dataset.state = false; // on/off // always default toggles to off
+                    tog.textContent = 'OFF';
+                    tLabel.appendChild(tog);
+
+                    break;
             
-            case 'soundSel':
-             break;
-            
-             case 'bpmSel':  
+                default:
+                    break;
+            }
 
-             break;
         }
-        this.saveSettings(this.settings);
+
+        //Setup Event Listeners
+        node.addEventListener('click',   this._fxCtrlToggleHandler);
+        node.addEventListener('change',  this._fxCtrlSliderChange);
+        node.addEventListener('input',   this._fxCtrlSliderInput);
+        
     }
 
-    //#region SP-404 MIDI Helper functions
+//#endregion
+
+
+
+
+//#region SP-404 MIDI Helper functions
 
     async _sendRaw(status, data1, data2) {
         if (!this.sp404OutId) {
@@ -432,9 +504,9 @@ export class SpTool {
     }
 
     async setFxParam(bus, paramIndex, value) {
-        const channelMap = { 1: 0, 2: 1, 3: 2, 4: 3 };
-        const channel = channelMap[bus];
-        if (channel === undefined) throw new Error(`Invalid bus ${bus}`);
+        // const channelMap = { 1: 0, 2: 1, 3: 2, 4: 3 };
+        // const channel = channelMap[bus];
+        // if (channel === undefined) throw new Error(`Invalid bus ${bus}`);
 
         // Param index → CC number (see chart)
         const ccTable = {
@@ -448,8 +520,27 @@ export class SpTool {
         const cc = ccTable[paramIndex];
         if (!cc) throw new Error(`Invalid FX param ${paramIndex}`);
 
-        await this._cc(channel, cc, value);
+        await this._cc(bus, cc, value);
     }
+
+    async toggleFxParam(bus, paramIndex, on = true) {
+        
+        // Param index → CC number (see chart)
+        const ccTable = {
+            0: 0x10, // Ctrl 1  (CC#16)
+            1: 0x11, // Ctrl 2  (CC#17)
+            2: 0x12, // Ctrl 3  (CC#18)
+            3: 0x50, // Ctrl 4  (CC#80)
+            4: 0x51, // Ctrl 5  (CC#81)
+            5: 0x52  // Ctrl 6  (CC#82)
+        };
+        const cc = ccTable[paramIndex];
+        if (!cc) throw new Error(`Invalid FX param ${paramIndex}`);
+
+        const value = on ? 0x7F : 0x00;          // 0‑63 = off, 64‑127 = on
+        await this._cc(bus, cc, value);   // CC#19 = 0x13
+    }
+
 
     async selectFx(bus, fxNumber) {
         // const channelMap = { 1: 0, 2: 1, 3: 2, 4: 3 };
@@ -503,105 +594,63 @@ export class SpTool {
     console.log('Current SP-404 output ID:', this.sp404OutId);
     }
 
-    //#endregion
-
-    //#region HELPERS
-
-    setupSaveDefault(){
-        return {
-            activeView: "fx-view",
-
-            busFX_12: BUS_FX_DEF_12,
-            busFX_34: BUS_FX_DEF_34,
+//#endregion
 
 
+//#region HELPERS
+_fxCtrlToggleHandler(e) {
+    // console.log("Toggle");
+    const toggle = e.target.closest('button.btn-fx-par-toggle');
+    if (!toggle) return;
 
-            bus1: { on: false, fx: 0, sliders: Array(6).fill(63) },
+    const newState = toggle.dataset.state !== 'true';
+    toggle.dataset.state = newState;
+    toggle.textContent = newState ? 'ON' : 'OFF';
+    this.el.busCtrlLabelNode[toggle.dataset.bus].textContent = toggle.dataset.label;
+    this.toggleFxParam(toggle.dataset.bus, toggle.dataset.ctrl, newState);
+}
 
-            bus2: { on: false, fx: 0, sliders: Array(6).fill(63) },
+_fxCtrlSliderChange(e) {
+    // console.log("SliderChange");
+    const slider = e.target.closest('input.btn-fx-par-slider');
+    if (!slider) return;
 
-            bus3: { on: false, fx: 1, sliders: Array(6).fill(63) },
+    const { bus, fxn, ctrl } = slider.dataset;
+    this.settings.bus[bus].ctrl[fxn][ctrl] = Number(slider.value);
+    this.el.busCtrlLabelNode[slider.dataset.bus].textContent = slider.dataset.label;
+    this.saveSettings(this.settings);
+}
 
-            bus4: { on: false, fx: 0, sliders: Array(6).fill(63) },
+_fxCtrlSliderInput(e) {
+    // console.log("SliderInput");
+    const slider = e.target.closest('input.btn-fx-par-slider');
+    if (!slider) return;
+
+    this.setFxParam(
+        slider.dataset.bus,
+        slider.dataset.ctrl,
+        Number(slider.value)
+    );
+}
+
+
+_onSettingChange(key, value) {
+    console.log(`Setting Change: ${key} →`, value);
+    switch (key) {
+        case 'timeSel':
+         break;
+        case 'volSel': 
+         break;
         
-        };
-    }
-
-    setupFxCtrl(bus, fxNumber, node) {
-
-        //CLEAN UP OLD NODES AND LISTENERS HERE
-        node.innerHTML = '';
+        case 'soundSel':
+         break;
         
-
-        //SETUP NEW CONTROLS
-        const fxArrCtrl = (bus < 2) ? BUS_FX_DEF_12 : BUS_FX_DEF_34;
-        for (let si = 0; si < 6; si++) {
-            const fxCtrlObj = fxArrCtrl[fxNumber];
-            const key = `ctrl${si+1}`;
-
-            //Check if there is a control
-            if (!fxCtrlObj[key]) {return;}
-
-            const o = fxCtrlObj[key];
-
-            switch (o.input.type) {
-                case "slider":
-                case "list":
-                    const sLabel = document.createElement('label');
-                    sLabel.htmlFor = `fx-slider-b${bus + 1}-${si}`;
-                    node.appendChild(sLabel);
-
-                    const slider = document.createElement('input');
-                    slider.type = 'range';
-                    slider.min = '0';
-                    slider.max = '127';
-                    slider.step = '1';
-                    slider.id = `fx-slider-b${bus + 1}-${si}`;
-                    slider.className = 'btn-fx-par-slider';
-                    slider.dataset.bus = bus; // zero‑based index
-                    slider.dataset.ctrl = si;
-                    slider.value = o.input.defVal; // restore saved value
-                    sLabel.appendChild(slider);
-
-                    break;
-
-                case "toggle":
-                    const tLabel = document.createElement('label');
-                    tLabel.htmlFor = `fx-toggle-b${bus + 1}-${si}`;
-                    node.appendChild(tLabel);
-
-                    const tog = document.createElement('button');
-                    tog.type = 'button';
-                    tog.id = `fx-toggle-b${bus + 1}-${si}`;
-                    tog.className = 'btn-fx-par-toggle';
-                    tog.dataset.bus = bus; // zero‑based index
-                    tog.dataset.ctrl = si; // zero‑based index
-                    tog.dataset.state = false; // on/off
-                    tog.textContent = 'OFF';
-                    tLabel.appendChild(tog);
-
-                    break;
-            
-                default:
-                    break;
-            }
-
-        }
-
-        //Setup Event Listeners
-
-        node.addEventListener('change', e => {
-            const slider = e.target.closest('input.btn-fx-par-slider');
-            if (!slider) return;
-            const [, bus, param] = slider.id.match(/fx-slider-b(\d+)-(\d+)/);
-            const key = `bus${bus}`;
-            this.settings[key].sliders[param] = Number(slider.value);
-            this.saveSettings(this.settings);
-        });
-
-
-
+         case 'bpmSel':  
+         break;
     }
-    //#endregion
+    this.saveSettings(this.settings);
+}
+
+//#endregion
 
 }
