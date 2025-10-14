@@ -12,7 +12,7 @@
   --ico-bg: #6B6B85;
   --ico-txt: #faede5;
   --boxCont-border: var(--ico-bg);
-  --boxCont-bg: #dadaf590;
+  --boxCont-bg: #dadaf546;
   --boxCont-txt: var(--highlight);
   --primary-color: #4a90e2;
   --btn-prime-color: #5c5c77;
@@ -20,6 +20,16 @@
   --btn-min-size: 2rem;
   --header-text: #2a2c30;
   --border-color: #adadd8;
+  --label-bg: #0000003f;
+  --label-txt: #0b05469d;
+  --btn-tog-bg-off: #6d6363;
+  --btn-tog-txt-off: var(--btn-prime-txt-color);
+  --btn-tog-bg-on: #6ebe86;
+  --btn-tog-txt-on: #272727;
+  --slider-bg: #b9b9b9;
+  --slider-accent: #435a8b;
+  --select-bg: #ddd;
+  --select-txt: #3f3e3e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,7 +47,7 @@
     --ico-bg: #D68251;
     --ico-txt: #04072b;
     --boxCont-border: var(--ico-bg);
-    --boxCont-bg: #1b0e0690;
+    --boxCont-bg: #36322e94;
     --boxCont-txt: var(--highlight);
     --primary-color: #4a90e2;
     --btn-prime-color: #493f39;
@@ -48,6 +58,16 @@
     --header-bg: #333;
     --header-text: #dad5d3;
     --border-color: #552408;
+    --label-bg: #0000005d;
+    --label-txt: #ffa600a2;
+    --btn-tog-bg-off: #3b1d1d;
+    --btn-tog-txt-off: var(--btn-prime-txt-color);
+    --btn-tog-bg-on: #ca8a00;
+    --btn-tog-txt-on: #272727;
+    --slider-bg: #333333;
+    --slider-accent: #dd7a00;
+    --select-bg: #3a3a3a;
+    --select-txt: #c4c4c4;
   }
 }
 /*Variable*/
@@ -289,16 +309,8 @@ button {
   height: 100%;
   width: 100%;
   color-scheme: light;
-  --vis-osc-main: rgb(87, 88, 170);
 }
 
-@media (prefers-color-scheme: dark) {
-  #fx-view,
-  #infx-view {
-    color-scheme: dark;
-    --vis-osc-main: rgb(236, 148, 14);
-  }
-}
 .fx-wrap {
   display: flex;
   width: 100%;
@@ -321,9 +333,15 @@ button {
   align-items: center;
   padding: 0.25rem;
   margin: 0.25rem;
-  background-color: rgba(36, 36, 36, 0.582);
-  border-radius: 16px;
+  background-color: var(--boxCont-bg);
+  border-radius: 12px;
+  box-shadow: 0px 3px 6px rgba(17, 16, 19, 0.3843137255);
   transition: 0.25s linear scale;
+}
+.fx-bus-wrap select {
+  border-radius: 6px;
+  background-color: var(--select-bg);
+  color: var(--select-txt);
 }
 
 @media (min-width: 60rem) {
@@ -338,8 +356,8 @@ button {
 }
 .fx-bus-name {
   width: 100%;
-  background: rgba(0, 0, 0, 0.363);
-  color: rgba(255, 166, 0, 0.637);
+  background: var(--label-bg);
+  color: var(--label-txt);
   border-radius: 8px;
   text-align: center;
   font-weight: 800;
@@ -349,12 +367,13 @@ button {
   margin: 0.4rem 0.1rem;
   max-width: 10rem;
   box-shadow: 0px 1px 3px #111013;
-  background: #3b1d1d;
+  background: var(--btn-tog-bg-off);
+  color: var(--btn-tog-txt-off);
 }
 
 .btn-fx-toggle[data-state=true] {
-  background: #ca8a00;
-  color: #272727;
+  background: var(--btn-tog-bg-on);
+  color: var(--btn-tog-txt-on);
 }
 
 .btn-fx-select {
@@ -371,13 +390,13 @@ button {
 .fx-busctrl-wrap input[type=range] {
   position: relative;
   display: inline-block;
-  background: rgb(51, 51, 51);
+  background: var(--slider-bg);
   vertical-align: middle;
   border-radius: 6px;
   box-shadow: 0px 0px 6px #000 inset;
   writing-mode: vertical-lr;
   direction: rtl;
-  accent-color: rgb(221, 122, 0);
+  accent-color: var(--slider-accent);
   width: 20px;
   vertical-align: bottom;
   margin: 0.2rem 0.1rem;
@@ -388,14 +407,15 @@ button {
 
 .btn-fx-par-toggle {
   box-shadow: 0px 1px 3px #111013;
-  background: #3b1d1d;
+  background: var(--btn-tog-bg-off);
+  color: var(--btn-tog-txt-off);
   width: 2.4rem;
   height: 2.4rem;
 }
 
 .btn-fx-par-toggle[data-state=true] {
-  background: #ca8a00;
-  color: #272727;
+  background: var(--btn-tog-bg-on);
+  color: var(--btn-tog-txt-on);
 }
 
 .fx-bus-ctrl-label {
@@ -564,32 +584,12 @@ textarea {
   resize: vertical;
 }
 
-#db-list,
-#file-list,
-#set-cat-list,
-#set-author-list {
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: white;
-  padding: 0.5rem;
-  border-radius: 5px;
-  max-height: 100px;
-  margin-bottom: 0.5rem;
-}
-#db-list li,
-#file-list li,
-#set-cat-list li,
-#set-author-list li {
-  list-style: none;
-  font-weight: bold;
-}
-
 #sysNotes {
   display: block;
   border: 2px solid #363636;
   border-radius: 8px;
   height: 2rem;
-  width: 12rem;
+  width: 10rem;
   overflow: hidden;
 }
 

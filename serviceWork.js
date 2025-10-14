@@ -1,5 +1,5 @@
-const VERSION = "000.074";
-const CACHE_NAME = `oracle-v-${VERSION}`;
+const VERSION = "000.001";
+const CACHE_NAME = `sptool-v-${VERSION}`;
 
 
 const APP_STATIC_RESOURCES = [
@@ -7,10 +7,9 @@ const APP_STATIC_RESOURCES = [
   "/index.html",
   
   "/css/norm.css",
-  "/css/dzbg.css",
-  "/css/igingStyles.css",
+  "/css/style.css",
 
-  "/js/init.js",
+  "/js/main.js",
 
   "/app.webmanifest",
 
@@ -25,7 +24,6 @@ const APP_STATIC_RESOURCES = [
   "/img/fav/ico_512_mask.png",
 
   "/fonts/SourceSans3VF-Upright.otf.woff2",
-  "/fonts/SourceSans3VF-Italic.otf.woff2",
 
   "/img/sdeco/topBo_lit.svg",
   "/img/sdeco/topL_lit.svg",

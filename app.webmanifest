@@ -1,13 +1,16 @@
 {
-    "name": "Dev-Zoo Beta Testing 1",
-    "short_name": "beta1",
-    "description": "Testing Tools",
+    "name": "SP-Tool",
+    "short_name": "sptool",
+    "description": "Dedicated midi control interface for the SP-404 MKII sampler and effector.",
     "start_url": "./index.html?fullscreen=true",
     "scope": ".",
     "display": "fullscreen",
     "background_color": "#111111",
     "theme_color": "#db4938",
     "orientation": "portrait-primary",
+    "permissions": [
+        "midi"
+      ],
     "lang":"en",
     "icons": [
         {

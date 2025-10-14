@@ -64,26 +64,3 @@ textarea {
     resize: vertical;
 }
 
-
-
-// Lists
-#db-list,
-#file-list,
-#set-cat-list,
-#set-author-list {
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: white;
-    padding: 0.5rem;
-    border-radius: 5px;
-    max-height: 100px;
-
-    margin-bottom: 0.5rem;
-
-
-    li {
-        list-style: none;
-        font-weight: bold;
-    }
-
-}
