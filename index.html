@@ -2,7 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <link href="/css/norm.css" rel="stylesheet" type="text/css" />
     <link href="/css/style.css" rel="stylesheet" type="text/css" />
     <!--FAVICONS-->
@@ -21,7 +23,41 @@
     <meta name="keywords" content="SP-404, SP-404MKII, SP-404 MK2, MIDI, Control, DJ Mode, FX Controller, SP-404 FX">
 
     <!-- Open Graph -->
+    <meta property="og:type" content="application">
+    <meta property="og:url" content="https://sptool.dev-zoo.net">
+    <meta property="og:title" content="SP-Tool - SP-404 MKII MIDI Control Interface.">
+    <meta property="og:description" content="Dedicated MIDI Control interface for the SP-404 MKII sampler and effector by Roland. Control all FX of the SP-404 MKII with a simple interface. Works for Android and IOS.">
+    <meta property="og:image" content="https://sptool.dev-zoo.net/img/banners/sptool_banner_og.jpg">
+    
     <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "SP-Tool",
+        "url": "https://sptool.dev-zoo.net",
+        "alternateName": "sptool",
+        "description": "Dedicated MIDI Control interface for the SP-404 MKII sampler and effector by Roland. Control all FX of the SP-404 MKII with a simple interface. Works for Android and IOS.",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "All",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://sptool.dev-zoo.net/img/banners/sptool_banner_og.jpg",
+          "width": 1200,
+          "height": 630
+        },
+        "author": {
+            "@type": "Person",
+            "name": "James Mearman",
+            "url": "https://www.dev-zoo.net/about"
+        },
+        "offers": {
+        "@type": "Offer",
+        "price": 0,
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
     <!--======= METADATA END =======-->
   </head>
 <body id="appBody">
@@ -74,10 +110,15 @@
 <!-- Info View -->
       <section id="info-view" class="view">
         <div class="view-wrap">
+          
           <div class="info-wrap">
             <h1>About SP-TooL</h1>
             <h2>What is it?</h2>
             <p>I've designed this tool to be used with an SP-404 MKII by Roland. It is basically a dedicated MIDI control interface for the SP-404MKII. I wanted quick access to all FX parameters when performing live. This tool is still "work in progress" and I'd love to hear feedback and suggestions. Please join the Dev-Zoo WhatsApp group for communication, feedback, and requests.</p>
+          </div>
+          <div id="shareMe" class="social-wrap">
+          </div>
+          <div class="info-wrap">
             <h2>How to install:</h2>
             <p>If the tool does not ask for installation then just add it to your home screen to make it work offline. Search on "how to install a PWA" if you have issues.</p>
             <h2>Requirements:</h2>

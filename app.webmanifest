@@ -1,13 +1,13 @@
 {
     "name": "SP-Tool",
-    "short_name": "sptool",
+    "short_name": "SPTool",
     "description": "Dedicated midi control interface for the SP-404 MKII sampler and effector.",
-    "start_url": "./index.html?fullscreen=true",
     "scope": ".",
     "display": "fullscreen",
+    "start_url": "/?fullscreen=true",
     "background_color": "#111111",
     "theme_color": "#db4938",
-    "orientation": "portrait-primary",
+    "orientation": "any",
     "permissions": [
         "midi"
       ],
