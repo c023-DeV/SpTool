@@ -1,26 +1,98 @@
-@media (min-width: 60rem) {
-    #beatVis{
-    width: 20rem;
-    height: 20rem;
+@media (min-width: 30rem) {
+    #sysNotes{
+    width: 12rem;
     }
+}
+
+@media (min-width: 60rem) {
     
-    .fx-bus-wrap{
-    scale: 1.5;
+    body {
+        font-size: 120%;
+    }
+    // .fx-bus-wrap{
+    // scale: 1.5;
+    // }
+
+    #sysNotes{
+    width: 14rem;
     }
 
+    .fx-wrap{
+        padding: 0 1rem;
+    }
+
+    .fx-bus-wrap{
+    max-width: 22rem;
+    }
+
+    .fx-busctrl-wrap{
+        margin-top: 0.3rem;
+        padding: 0 0.6rem;
+        
+
+        input[type=range] {
+            width: 30px;
+            height: 16rem;
+            margin: 0.2rem 0.4rem;
+        }
+
+
+        button{
+            width: 3.5rem;
+            height: 3.5rem;
+            padding: 0.15rem;
+
+        }
+
+    }
+
+    
 }
 
 @media (min-width: 70rem) {
     body {
-        font-size: 120%;
+        font-size: 150%;
     }
+    // .fx-bus-wrap{
+    // scale: 2;
+    // }
 
-    #beatVis{
-    width: 35rem;
-    height: 35rem;
+    .fx-wrap{
+        padding: 0 1rem;
     }
 
     .fx-bus-wrap{
-    scale: 2;
+    max-width: 22rem;
     }
+
+    .fx-busctrl-wrap{
+        margin-top: 0.3rem;
+        padding: 0 0.6rem;
+        
+
+        input[type=range] {
+
+            width: 40px;
+            height: 16rem;
+            margin: 0.2rem 0.4rem;
+        }
+
+
+        button{
+            width: 3.5rem;
+            height: 3.5rem;
+            padding: 0.15rem;
+
+        }
+
+    }
+
+
 }
+
+@media (min-width: 100rem) {
+
+    
+}
+
+

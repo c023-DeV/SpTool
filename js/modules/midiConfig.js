@@ -822,7 +822,7 @@ export const BUS_FX_DEF_34 = [
   },
   {
     name: "DJFX Looper",
-    ctrl1: { name: "LENGHT",  input: { type :"slider", label:"Sec", defVal: "0" } },
+    ctrl1: { name: "LENGTH",  input: { type :"slider", label:"Sec", defVal: "0" } },
     ctrl2: { name: "SPEED",   input: { type :"slider", label:"Val", defVal: "127" } },
     ctrl3: { name: "LOOP SW", input: { type :"toggle", label:"Val", defVal: "0" } },
     ctrl4: null,

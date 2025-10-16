@@ -45,6 +45,8 @@
     --select-bg: #ddd;
     --select-txt: #3f3e3e;
 
+    --logo-col: var(--header-text);
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -96,6 +98,9 @@
 
     --select-bg: #3a3a3a;
     --select-txt: #c4c4c4;
+
+    --logo-col: #9c9592;
+
 
   }
 }

@@ -13,6 +13,7 @@
     display: flex;
     // height: 100%;
     width: 100%;
+    padding: 0 0.2rem;
     justify-content: space-around;
 }
 
@@ -20,9 +21,6 @@
     .fx-wrap{
         flex-wrap: wrap;
     }
-    // .fx-bus-wrap{
-    //     flex: 1 0 50%;
-    // }
 }
 
 @media (orientation: landscape) {
@@ -37,8 +35,8 @@
     display: flex;
     flex-flow: column;
     align-items: center;
-
-    // height: 100%;
+    flex: 1 1 0%;  
+    max-width: 13rem;
     padding: 0.25rem;
     margin: 0.25rem;
     background-color: var(--boxCont-bg);
@@ -54,15 +52,36 @@
     }
 }
 
-@media (min-width: 60rem) {
-    .fx-bus-wrap{
-    scale: 1.5;
-    }
-}
+.fx-busctrl-wrap{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0 0.3rem;
 
-@media (min-width: 70rem) {
-    .fx-bus-wrap{
-    scale: 2;
+    input[type=range] {
+
+        // appearance: none;
+        position: relative;
+        display: inline-block;
+        background: var(--slider-bg);
+        
+        vertical-align: middle;
+        border-radius: 6px;
+        box-shadow: 0px 0px 6px #000 inset;
+
+        writing-mode: vertical-lr;
+        direction: rtl;
+        accent-color: var(--slider-accent);
+        width: 20px;
+        height: 8rem;
+        vertical-align: bottom;
+        margin: 0.1rem 0.1rem;
+    }
+
+
+    button{
+        padding: 0.15rem;
     }
 
 }
@@ -94,38 +113,6 @@
     max-width: 10rem;
 }
 
-.fx-busctrl-wrap{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 0.3rem;
-
-    input[type=range] {
-
-        // appearance: none;
-        position: relative;
-        display: inline-block;
-        background: var(--slider-bg);
-        
-        vertical-align: middle;
-        border-radius: 6px;
-        box-shadow: 0px 0px 6px #000 inset;
-
-        writing-mode: vertical-lr;
-        direction: rtl;
-        accent-color: var(--slider-accent);
-        width: 20px;
-        vertical-align: bottom;
-        margin: 0.2rem 0.1rem;
-    }
-
-
-    button{
-        padding: 0.15rem;
-    }
-
-}
-
 .btn-fx-par-toggle{
     box-shadow: 0px 1px 3px #111013;
     background: var(--btn-tog-bg-off);
@@ -139,7 +126,7 @@
 }
 
 .fx-bus-ctrl-label{
-    font-size: small;
+    // font-size: small;
     text-align: center;
     width: 100%;
 }

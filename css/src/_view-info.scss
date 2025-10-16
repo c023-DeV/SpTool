@@ -6,10 +6,15 @@
         margin:0;
     }
 
+    li{
+        margin-bottom: 1rem;
+    }
 
 }
 
 .info-wrap{
+    align-self: center;
     min-height: 100%;
-    margin: 0 1rem;
+    max-width: 70rem;
+    margin: 0 1.5rem;
 }

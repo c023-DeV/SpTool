@@ -1,4 +1,4 @@
-const VERSION = "000.003";
+const VERSION = "000.006";
 const CACHE_NAME = `sptool-v-${VERSION}`;
 
 

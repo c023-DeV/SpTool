@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
    
    const share = new ShareMe(
     '#shareMe',
-    'https://fretool.dev-zoo.net',
-    'https://chat.whatsapp.com/JXLaKagPXh529k52I3iLC2?mode=ems_copy_t'
+    'https://sptool.dev-zoo.net',
+    'https://chat.whatsapp.com/H1UPrKcDwtSDob7SG9tiVx?mode=wwt'
     );
 });
 

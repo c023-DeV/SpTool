@@ -1,6 +1,6 @@
 // Views
 .view {
-    // display: none; // Hidde all by default
+    display: none; // Hidde all by default
 }
 
 #main-view {
@@ -40,6 +40,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-around;
+    align-items: center;
     width: 100%;
 
     background-color: var(--navbar-bg);
@@ -68,7 +69,7 @@
             color: var(--btn-prime-txt-color);
             border: none;
             margin: 0;
-            padding: 0.1rem 1rem;
+            padding: 0.1rem 0.2rem;
             border-radius: 5px;
             cursor: pointer;
         }
@@ -121,9 +122,16 @@
 //nav Icons
 
 .nav-svg{
-    height: 1.8rem;
-    width: auto;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem 0.2rem;
+    width: 3rem;
+    svg{
+        display: block;
+        height: 1.8rem;
+        width: 1.8rem;
+    }
     path{
         fill: var(--btn-prime-txt-color)
     }
@@ -147,6 +155,7 @@
   align-self: center;
   text-decoration: none;
   font-weight: bold;
+  margin: 1rem 0.2rem
 }
 
 .dzHomeBtn{
@@ -159,14 +168,29 @@
     overflow: hidden;
 }
 
-.harpFaceBtn{
-    width: 2rem;
-    height: 2rem;
-    display: block;
-    background-size: auto;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    path{
-        fill: var(--header-text)
+.logo-wrap{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.logoIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg{
+        display: block;
+        width: 1.8rem;
+        height: 1.8rem;
     }
+    path{
+        fill: var(--logo-col)
+    }
+}
+
+.logoTitle{
+    color: var(--logo-col);
+    font-weight: 900;
+    letter-spacing: 0.2rem;
 }

@@ -48,14 +48,21 @@ export class SpTool {
         // --- View Navigation ---
         const navButtons = document.querySelectorAll('header nav button');
         navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const target = button.dataset.view;
-            if (target) {
-                this.settings.activeView = target;
-                this.saveSettings(this.settings);
-                this.showView(this.settings.activeView)
-            };
-        });
+            if (button.hasAttribute("data-view")){
+                button.addEventListener('click', () => {
+                    const target = button.dataset.view;
+                    if (target) {
+                        this.settings.activeView = target;
+                        this.saveSettings(this.settings);
+                        this.showView(this.settings.activeView)
+                    };
+                });
+            } else if (button.id === "syncfx"){
+                button.addEventListener('click', async () => {
+                    await this._syncAll();
+                });
+            }
+        
         });
     }
 
@@ -205,6 +212,8 @@ export class SpTool {
             const newState = !state;
             btn.dataset.state = newState;
             btn.textContent = newState ? 'ON' : 'OFF';
+
+            this.selectFx(btn.dataset.bus, this.settings.bus[btn.dataset.bus].fx); //make sure we have the right FX
             this.toggleFx(btn.dataset.bus, newState);
 
             //Don't want to save the state of the bus toggle
@@ -598,6 +607,25 @@ export class SpTool {
 
 
 //#region HELPERS
+
+async _syncAll(){
+    console.log("sending sync data...");
+
+    const busArr = this.settings.bus;
+    busArr.forEach((bus, index) => {
+                
+                for (let ix = 0; ix < 6; ix++) {
+                    const key = `ctrl${ix+1}`;
+                    if(bus[key]){
+                       
+                    }
+                }
+            });
+
+    sysNote("💨SYNC SENT", "good");
+}
+
+
 _fxCtrlToggleHandler(e) {
     // console.log("Toggle");
     const toggle = e.target.closest('button.btn-fx-par-toggle');
