@@ -1,5 +1,5 @@
-# Tuner
- Pure JavaScript Pitch Detector (Tuner)
+# SP-Tool
+ Pure JavaScript MIDI Interface for the Roland SP-404 MKII Sampler and Effector.
 
 
 use " npx rollup --config rollup.config.mjs " to export a single file to /dist
