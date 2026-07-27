@@ -1,4 +1,4 @@
-const VERSION = "000.015";
+const VERSION = "000.018";
 const CACHE_NAME = `sptool-v-${VERSION}`;
 
 const APP_STATIC_RESOURCES = [
@@ -76,7 +76,9 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.mode === "navigate") {
-    event.respondWith(caches.match("/"));
+    event.respondWith(
+      caches.match("/").then(res => res || fetch(event.request))
+    );
     return;
   }
 
@@ -84,22 +86,15 @@ self.addEventListener("fetch", (event) => {
   const isAsset = /\.(js|css|woff2|svg|png)$/i.test(url.pathname);
 
   if (isAsset) {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(CACHE_NAME);
-        const cached = await cache.match(event.request);
-
-        const fetchPromise = fetch(event.request).then((response) => {
-          if (response.ok) {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        }).catch(() => cached || new Response(null, { status: 404 }));
-
-        return cached || fetchPromise;
-      })(),
-    );
-    return;
+      event.respondWith(
+          fetch(event.request)
+              .then(async response => {
+                  const cache = await caches.open(CACHE_NAME);
+                  cache.put(event.request, response.clone());
+                  return response;
+              })
+              .catch(() => caches.match(event.request))
+      );
   }
 
   event.respondWith(
