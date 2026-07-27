@@ -4,7 +4,7 @@
     "description": "Dedicated midi control interface for the SP-404 MKII sampler and effector.",
     "scope": ".",
     "display": "fullscreen",
-    "start_url": "/?fullscreen=true",
+    "start_url": "/",
     "background_color": "#111111",
     "theme_color": "#db4938",
     "orientation": "any",

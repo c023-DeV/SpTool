@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
    
    const share = new ShareMe(
     '#shareMe',
-    'https://sptool.dev-zoo.net',
-    'https://chat.whatsapp.com/H1UPrKcDwtSDob7SG9tiVx?mode=wwt'
+    'https://sptool.dev-zoo.net'
     );
 });
 
